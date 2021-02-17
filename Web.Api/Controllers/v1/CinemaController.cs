@@ -44,5 +44,11 @@ namespace CinemaService.Web.Api.Controllers.v1
 
             return Ok(seats);
         }
+
+        [HttpPost("booking/{showName}/{seatNumber}")]
+        public void BookCinemaShow([FromRoute] string showName, [FromRoute] string seatNumber)
+        {
+            _bookingService.BookSeat(showName, seatNumber);
+        }
     }
 }
