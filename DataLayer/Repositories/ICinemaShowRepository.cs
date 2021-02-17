@@ -8,5 +8,7 @@ namespace CinemaService.DataLayer.Repositories
         IEnumerable<CinemaShowDTO> GetAvailableCinemaShows();
 
         CinemaShowDTO GetCinemaShow(string showName);
+
+        void UpdateCinemaShow(CinemaShowDTO cinemaShow);
     }
 }

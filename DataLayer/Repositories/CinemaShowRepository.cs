@@ -22,5 +22,10 @@ namespace CinemaService.DataLayer.Repositories
         {
             return _context.CinemaShows.Where(cs => cs.Name == showName).FirstOrDefault();
         }
+
+        public void UpdateCinemaShow(CinemaShowDTO cinemaShow)
+        {
+            _context.SaveChanges();
+        }
     }
 }

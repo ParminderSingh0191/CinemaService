@@ -1,6 +1,7 @@
 ﻿using CinemaService.Web.Api.Library.Models;
 using CinemaService.Web.Api.Library.Services;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace CinemaService.Web.Api.Controllers.v1
@@ -29,6 +30,11 @@ namespace CinemaService.Web.Api.Controllers.v1
         {
             var shows = _cinemaShowService.GetAvailableCinemaShows();
 
+            if(shows == null)
+            {
+                return NotFound(null);
+            }
+
             return Ok(shows);
         }
 
@@ -36,15 +42,53 @@ namespace CinemaService.Web.Api.Controllers.v1
         [HttpGet]
         public ActionResult<IEnumerable<Seat>> GetAvailabelSeats([FromRoute] string showName)
         {
-            var seats = _seatService.GetAvailableSeats(showName);
+            if(string.IsNullOrWhiteSpace(showName))
+            {
+                return BadRequest("Cinema show name is not provided");
+            }
 
-            return Ok(seats);
+            try
+            {
+                var seats = _seatService.GetAvailableSeats(showName);
+
+                if (seats == null)
+                {
+                    return NotFound("Unable to find any available seats.");
+                }
+
+                return Ok(seats);
+            }
+            catch (Exception)
+            {
+                return Conflict("Unable to  complete the request");
+                throw;
+            }
         }
 
         [HttpPost("booking/{showName}/{seatNumber}")]
-        public void BookCinemaShow([FromRoute] string showName, [FromRoute] string seatNumber)
+        public ActionResult BookCinemaShow([FromRoute] string showName, [FromRoute] string seatNumber)
         {
-            _bookingService.BookSeat(showName, seatNumber);
+            if(string.IsNullOrWhiteSpace(showName) || string.IsNullOrWhiteSpace(seatNumber))
+            {
+                return BadRequest("Unable to process the request because of invalid parameter(s)");
+            }
+
+            try
+            {
+                var result = _bookingService.BookSeat(showName, seatNumber);
+
+                if(result)
+                {
+                    return Ok("Hurrayyyy! Booking successful");
+                }
+
+                return BadRequest("Unable to book the show.");
+            }
+            catch (Exception)
+            {
+                return Conflict("Unable to complete the request");
+                throw;
+            }
         }
     }
 }

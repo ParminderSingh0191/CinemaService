@@ -2,6 +2,6 @@
 {
     public interface IBookingService
     {
-        void BookSeat(string showName, string seatNumber);
+        bool BookSeat(string showName, string seatNumber);
     }
 }

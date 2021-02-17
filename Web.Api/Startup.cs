@@ -36,6 +36,8 @@ namespace CinemaService.Web.Api
             services.AddTransient<ISeatService, SeatService>();
 
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+            services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>(nameof(ApplicationDbContext));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +56,7 @@ namespace CinemaService.Web.Api
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/status");
                 endpoints.MapControllers();
             });
         }

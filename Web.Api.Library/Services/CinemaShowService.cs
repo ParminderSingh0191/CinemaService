@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CinemaService.DataLayer.Repositories;
 using CinemaService.Web.Api.Library.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,10 +20,20 @@ namespace CinemaService.Web.Api.Library.Services
 
         public IEnumerable<CinemaShow> GetAvailableCinemaShows()
         {
-            var shows = _cinemaShowRepository.GetAvailableCinemaShows();
-            return (from show in shows
-                    let res = _mapper.Map<CinemaShow>(show)
-                    select res).ToList();
+            try
+            {
+                var shows = _cinemaShowRepository.GetAvailableCinemaShows();
+
+                return (from show in shows
+                        let res = _mapper.Map<CinemaShow>(show)
+                        select res).ToList();
+            }
+            catch (Exception)
+            {
+                return null;
+                throw;
+            }
+            
         }
     }
 }
