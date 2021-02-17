@@ -29,6 +29,7 @@ namespace CinemaService.Web.Api
 
             services.AddScoped<ICinemaShowRepository, CinemaShowRepository>();
             services.AddScoped<ISeatRepository, SeatRepository>();
+            services.AddScoped<IBookingRepository, BookingRepository>();
 
             services.AddTransient<IBookingService, BookingService>();
             services.AddTransient<ICinemaShowService, CinemaShowService>();

@@ -1,11 +1,7 @@
-﻿using CinemaService.DataLayer.Repositories;
-using CinemaService.Web.Api.Library.Models;
+﻿using CinemaService.Web.Api.Library.Models;
 using CinemaService.Web.Api.Library.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CinemaService.Web.Api.Controllers.v1
 {
@@ -36,11 +32,11 @@ namespace CinemaService.Web.Api.Controllers.v1
             return Ok(shows);
         }
 
-        [Route("[action]")]
+        [Route("[action]/{showName}")]
         [HttpGet]
-        public ActionResult<IEnumerable<Seat>> GetAvailabelSeats()
+        public ActionResult<IEnumerable<Seat>> GetAvailabelSeats([FromRoute] string showName)
         {
-            var seats = _seatService.GetAvailableSeats();
+            var seats = _seatService.GetAvailableSeats(showName);
 
             return Ok(seats);
         }

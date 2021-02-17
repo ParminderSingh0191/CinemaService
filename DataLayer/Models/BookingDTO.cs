@@ -10,5 +10,7 @@ namespace CinemaService.DataLayer.Models
         public CinemaShowDTO CinemaShow { get; set; }
 
         public SeatDTO Seat { get; set; }
+
+        public bool IsBooked { get; set; }
     }
 }
