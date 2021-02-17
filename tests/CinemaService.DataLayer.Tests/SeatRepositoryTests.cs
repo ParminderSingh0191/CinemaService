@@ -1,0 +1,59 @@
+﻿using AutoFixture;
+using CinemaService.DataLayer.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Xunit;
+
+namespace CinemaService.DataLayer.Tests
+{
+    public class SeatRepositoryTests
+    {
+        private readonly SeatRepository _seatRepository;
+        private readonly Fixture _fixture;
+
+        public SeatRepositoryTests()
+        {
+            _fixture = new Fixture();
+            _seatRepository = (SeatRepository)RepositorySetup.GetInMemorySeatRespository(Guid.NewGuid().ToString(), _fixture);
+        }
+
+        [Fact]
+        public void GivenSeatEntities_WhenQueryForAvailableSeats_ShouldGetSeats()
+        {
+            // ACT
+            var results = _seatRepository.GetAvailableSeats(1);
+
+            // ASSERT
+            Assert.NotNull(results);
+
+            foreach (var res in results)
+            {
+                Assert.NotNull(res.SeatNumber);
+            }
+        }
+
+        [Fact]
+        public void GivenSeatEntities_WhenQueryForSpecific_ShouldGetSeat()
+        {
+            // ARRANGE
+            string seatNumber = "ABCD";
+
+            // ACT
+            var seat = _seatRepository.GetSeat(seatNumber);
+
+            // ASSERT
+            Assert.NotNull(seat);
+            Assert.Equal(seatNumber, seat.SeatNumber);
+        }
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData("   ")]
+        public void GivenInvalidSeatNumber_WhenQuerying_ShouldThrowArgumentException(string seatNumber)
+        {
+            Assert.Throws<ArgumentException>(() => _seatRepository.GetSeat(seatNumber));
+        }
+    }
+}

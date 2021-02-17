@@ -32,11 +32,33 @@ namespace CinemaService.DataLayer.Tests
                                             With(cs => cs.IsAvailable, false).
                                             Create();
 
+            
+
             dbContext.CinemaShows.Add(cinemaShow);
             dbContext.CinemaShows.Add(cinemShowWithSpecificName);
             dbContext.CinemaShows.Add(toUpdateCinemaShow);
             dbContext.SaveChanges();
             return new CinemaShowRepository(dbContext);
+        }
+
+        public static ISeatRepository GetInMemorySeatRespository(string dbName, Fixture fixture)
+        {
+            DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>().UseInMemoryDatabase(dbName)
+                .Options;
+            var dbContext = new ApplicationDbContext(options);
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
+            var seat = fixture.Create<SeatDTO>();
+            var specificSeat = fixture.Build<SeatDTO>().
+                                            With(s => s.SeatNumber, "ABCD").
+                                            Create();
+
+            dbContext.Seats.Add(seat);
+            dbContext.Seats.Add(specificSeat);
+            dbContext.SaveChanges();
+
+            return new SeatRepository(dbContext);
         }
     }
 }

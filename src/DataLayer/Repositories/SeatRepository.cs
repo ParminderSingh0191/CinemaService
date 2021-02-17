@@ -1,5 +1,6 @@
 ﻿using CinemaService.DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,6 +36,11 @@ namespace CinemaService.DataLayer.Repositories
 
         public SeatDTO GetSeat(string seatNumber)
         {
+            if(string.IsNullOrWhiteSpace(seatNumber))
+            {
+                throw new ArgumentException(nameof(seatNumber));
+            }
+
             return _context.Seats.Where(s => s.SeatNumber == seatNumber).FirstOrDefault();
         }
     }
