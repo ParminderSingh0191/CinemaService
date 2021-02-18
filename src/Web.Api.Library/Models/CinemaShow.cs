@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace CinemaService.Web.Api.Library.Models
+﻿namespace CinemaService.Web.Api.Library.Models
 {
     public class CinemaShow
     {

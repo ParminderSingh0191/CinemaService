@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.IO;
+using System.Linq;
 
 namespace CinemaService.IntegrationTests
 {
@@ -24,6 +25,12 @@ namespace CinemaService.IntegrationTests
 
             builder.ConfigureServices(services =>
             {
+                var descriptor = services.SingleOrDefault(
+                d => d.ServiceType ==
+                    typeof(DbContextOptions<ApplicationDbContext>));
+
+                services.Remove(descriptor);
+
                 ServiceProvider serviceProvider = new ServiceCollection().AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
 
                 services.AddDbContext<ApplicationDbContext>(options =>
@@ -40,7 +47,10 @@ namespace CinemaService.IntegrationTests
                     var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
 
                     dbContext.Database.EnsureCreated();
+
+                    SeedData.PopulateWithTestData(dbContext);
                 }
+
             });
 
             base.ConfigureWebHost(builder);

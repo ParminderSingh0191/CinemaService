@@ -4,7 +4,6 @@ using CinemaService.DataLayer.Repositories;
 using CinemaService.Web.Api.Library.Services;
 using FluentAssertions;
 using Moq;
-using System;
 using System.Collections.Generic;
 using Xunit;
 

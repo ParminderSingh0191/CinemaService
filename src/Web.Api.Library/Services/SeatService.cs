@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using CinemaService.DataLayer.Repositories;
 using CinemaService.Web.Api.Library.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 

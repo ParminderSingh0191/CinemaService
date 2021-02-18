@@ -1,14 +1,11 @@
-using AutoFixture;
 using CinemaService.Web.Api;
 using CinemaService.Web.Api.Library.Models;
-using CinemaService.Web.Api.Library.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -20,12 +17,6 @@ namespace CinemaService.IntegrationTests
 
         private readonly HttpClient _client;
 
-        private readonly Fixture _fixture;
-
-        private readonly Mock<ICinemaShowService> _cinemaShowServiceMock;
-
-        private readonly Mock<ISeatService> _seatServiceMock;
-
         public CinemaServiceIntegrationTests(CustomWebApplicationFactory<Startup> factory)
         {
             _client = factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -33,11 +24,6 @@ namespace CinemaService.IntegrationTests
                 AllowAutoRedirect = false,
                 BaseAddress = new Uri("https://localhost")
             });
-
-            _fixture = new Fixture();
-
-            _cinemaShowServiceMock = new Mock<ICinemaShowService>();
-            _seatServiceMock = new Mock<ISeatService>();
         }
 
         [Fact]
@@ -59,7 +45,6 @@ namespace CinemaService.IntegrationTests
         {
             // ARRANGE
             var url = "/api/v1/cinema/GetAvailableCinemaShows";
-            _cinemaShowServiceMock.Setup(cs => cs.GetAvailableCinemaShows()).Returns(_fixture.Create<IEnumerable<CinemaShow>>());
 
             // ACT
             HttpResponseMessage response = await _client.GetAsync(url);
@@ -69,15 +54,14 @@ namespace CinemaService.IntegrationTests
 
             // ASSERT
             shows.Should().NotBeNull();
+            shows.Should().HaveCount(2);
         }
 
         [Fact]
         public async Task GivenListOfAvailableSeats_WhenCallGetAvailabelSeats_ShouldReturnOK()
         {
             // ARRANGE
-            var show = _fixture.Create<CinemaShow>();
-            var url = $"/api/v1/cinema/GetAvailabelSeats/{show.Name}";
-            _seatServiceMock.Setup(s => s.GetAvailableSeats(show.Name)).Returns(_fixture.Create<IEnumerable<Seat>>());
+            var url = "/api/v1/cinema/GetAvailabelSeats/Avengers Age Of Ultron";
 
             // ACT
             HttpResponseMessage response = await _client.GetAsync(url);
@@ -87,26 +71,29 @@ namespace CinemaService.IntegrationTests
 
             // ASSERT
             seats.Should().NotBeNull();
+            seats.Should().HaveCount(3);
         }
 
-        //private HttpClient CreateHttpClient()
-        //{
-        //    return _factory.SetupForTests(null,
-        //                                   testServices =>
-        //                                   {
-        //                                       testServices.AddSingleton(_seatServiceMock.Object);
-        //                                       testServices.AddSingleton(_cinemaShowServiceMock.Object);
-        //                                   })
-        //                    .CreateHttpClientForTest();
-        //}
+        [Fact]
+        public async Task GivenListOfAvailableSeatsAndShows_WhenCallingBookShow_ShouldReturnOK()
+        {
+            // ARRANGE
+            var bookingURl = "/api/v1/cinema/booking/Avengers Age Of Ultron/A10";
+            var getSeatsUrl = "/api/v1/cinema/GetAvailabelSeats/Avengers Age Of Ultron";
+
+            // ACT
+            HttpResponseMessage response = await _client.SendAsync(new HttpRequestMessage(HttpMethod.Post, bookingURl));
+            response.EnsureSuccessStatusCode();
+
+            HttpResponseMessage seatsResponse = await _client.GetAsync(getSeatsUrl);
+            seatsResponse.EnsureSuccessStatusCode();
+            string stringResponse = await seatsResponse.Content.ReadAsStringAsync();
+            var seats = JsonConvert.DeserializeObject<IEnumerable<Seat>>(stringResponse);
+
+            // ASSERT
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            seats.Should().NotBeNull();
+            seats.Should().HaveCount(2);
+        }
     }
 }
-
-
-// ARRANGE
-
-
-// ACT
-
-
-// ASSERT

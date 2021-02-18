@@ -2,9 +2,6 @@
 using CinemaService.DataLayer.Models;
 using CinemaService.DataLayer.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CinemaService.DataLayer.Tests
 {

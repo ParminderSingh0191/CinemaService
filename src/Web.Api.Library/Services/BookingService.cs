@@ -1,5 +1,4 @@
 ﻿using CinemaService.DataLayer.Repositories;
-using System;
 using System.Linq;
 
 namespace CinemaService.Web.Api.Library.Services
