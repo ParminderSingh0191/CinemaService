@@ -15,7 +15,7 @@ namespace CinemaService.DataLayer.Tests
         public BookingRepositoryTests()
         {
             _fixture = new Fixture();
-            _bookingRepository = (BookingRepository)RepositorySetup.GetInMemoryBookingRespository(Guid.NewGuid().ToString(), _fixture);
+            _bookingRepository = (BookingRepository)RepositorySetup.GetInMemoryBookingRespository(Guid.NewGuid().ToString());
         }
 
         [Fact]

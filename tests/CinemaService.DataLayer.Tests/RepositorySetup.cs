@@ -79,7 +79,7 @@ namespace CinemaService.DataLayer.Tests
             return new SeatRepository(dbContext);
         }
 
-        public static IBookingRepository GetInMemoryBookingRespository(string dbName, Fixture fixture)
+        public static IBookingRepository GetInMemoryBookingRespository(string dbName)
         {
             DbContextOptions<ApplicationDbContext> options = new DbContextOptionsBuilder<ApplicationDbContext>().
                                                              UseInMemoryDatabase(dbName)
