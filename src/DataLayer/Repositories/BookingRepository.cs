@@ -1,4 +1,6 @@
 ﻿using CinemaService.DataLayer.Models;
+using System;
+using System.Linq;
 
 namespace CinemaService.DataLayer.Repositories
 {
@@ -13,6 +15,16 @@ namespace CinemaService.DataLayer.Repositories
 
         public void BookShow(CinemaShowDTO cinemaShow, SeatDTO seat)
         {
+            if (cinemaShow == null)
+            {
+                throw new ArgumentNullException(nameof(cinemaShow));
+            }
+
+            if (seat == null)
+            {
+                throw new ArgumentNullException(nameof(seat));
+            }
+
             var booking = new BookingDTO
             {
                 CinemaShow = cinemaShow,
@@ -22,6 +34,11 @@ namespace CinemaService.DataLayer.Repositories
 
             _context.Bookings.Add(booking);
             _context.SaveChanges();
+        }
+
+        public BookingDTO GetBooking(int cinemaShowId, int seatId)
+        {
+            return _context.Bookings.Where(b => b.CinemaShow.Id == cinemaShowId && b.Seat.Id == seatId).FirstOrDefault();
         }
     }
 }
