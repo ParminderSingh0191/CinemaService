@@ -1,5 +1,6 @@
 using AutoFixture;
 using CinemaService.DataLayer.Repositories;
+using FluentAssertions;
 using System;
 using Xunit;
 
@@ -23,11 +24,10 @@ namespace CinemaService.DataLayer.Tests
             var results = _cinemaShowRepository.GetAvailableCinemaShows();
 
             // ASSERT
-            Assert.NotNull(results);
-
+            results.Should().NotBeNull();
             foreach (var res in results)
             {
-                Assert.True(res.IsAvailable);
+                res.IsAvailable.Should().BeTrue();
             }
         }
 
@@ -41,8 +41,8 @@ namespace CinemaService.DataLayer.Tests
             var result = _cinemaShowRepository.GetCinemaShow(showName);
 
             // ASSERT
-            Assert.NotNull(result);
-            Assert.Equal(showName, result.Name);
+            result.Should().NotBeNull();
+            result.Name.Should().BeEquivalentTo(showName);
         }
 
         [Fact]
@@ -57,8 +57,9 @@ namespace CinemaService.DataLayer.Tests
             _cinemaShowRepository.UpdateCinemaShow(show);
             var updatedShow = _cinemaShowRepository.GetCinemaShow(showName);
 
-            Assert.NotNull(updatedShow);
-            Assert.False(updatedShow.IsAvailable);
+            // ASSERT
+            updatedShow.Should().NotBeNull();
+            updatedShow.IsAvailable.Should().BeFalse(); ;
         }
 
         [Theory]

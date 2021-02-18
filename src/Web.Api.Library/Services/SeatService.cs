@@ -10,7 +10,9 @@ namespace CinemaService.Web.Api.Library.Services
     public class SeatService : ISeatService
     {
         private readonly ISeatRepository _seatRepository;
+
         private readonly ICinemaShowRepository _cinemaShowRepository;
+
         private readonly IMapper _mapper;
 
         public SeatService(ISeatRepository seatRepository,
@@ -24,22 +26,18 @@ namespace CinemaService.Web.Api.Library.Services
 
         public IEnumerable<Seat> GetAvailableSeats(string showName)
         {
-            try
+            var show = _cinemaShowRepository.GetCinemaShow(showName);
+
+            var seats = _seatRepository.GetAvailableSeats(show.Id);
+
+            if(seats != null)
             {
-                var show = _cinemaShowRepository.GetCinemaShow(showName);
-
-                var seats = _seatRepository.GetAvailableSeats(show.Id);
-
                 return (from seat in seats
                         let res = _mapper.Map<Seat>(seat)
                         select res).ToList();
             }
-            catch (Exception)
-            {
-                return null;
-                throw;
-            }
-            
+
+            return null;
         }
     }
 }

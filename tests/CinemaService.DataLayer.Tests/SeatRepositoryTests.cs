@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using CinemaService.DataLayer.Repositories;
+using FluentAssertions;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -25,11 +26,10 @@ namespace CinemaService.DataLayer.Tests
             var results = _seatRepository.GetAvailableSeats(_fixture.Create<int>());
 
             // ASSERT
-            Assert.NotNull(results);
-
+            results.Should().NotBeNull();
             foreach (var res in results)
             {
-                Assert.NotNull(res.SeatNumber);
+                res.SeatNumber.Should().NotBeNull();
             }
         }
 
@@ -43,8 +43,8 @@ namespace CinemaService.DataLayer.Tests
             var seat = _seatRepository.GetSeat(seatNumber);
 
             // ASSERT
-            Assert.NotNull(seat);
-            Assert.Equal(seatNumber, seat.SeatNumber);
+            seat.Should().NotBeNull();
+            seat.SeatNumber.Should().BeEquivalentTo(seatNumber);
         }
 
         [Theory]
@@ -63,11 +63,10 @@ namespace CinemaService.DataLayer.Tests
             var results = _seatRepository.GetAvailableSeats(1);
 
             // ASSERT
-            Assert.NotNull(results);
-
+            results.Should().NotBeNull();
             foreach (var res in results)
             {
-                Assert.NotEqual("A10", res.SeatNumber);
+                res.SeatNumber.Should().NotBeEquivalentTo("A10");
             }
         }
     }

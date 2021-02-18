@@ -25,33 +25,25 @@ namespace CinemaService.Web.Api.Library.Services
         // If the show is unavail
         public bool BookSeat(string showName, string seatNumber)
         {
-            try
+            var show = _cinemaShowRepository.GetCinemaShow(showName);
+
+            if (!show.IsAvailable)
             {
-                var show = _cinemaShowRepository.GetCinemaShow(showName);
-
-                if (!show.IsAvailable)
-                {
-                    return false;
-                }
-
-                var seats = _seatRepository.GetAvailableSeats(show.Id).ToList();
-                if (seats.Count >= 0)
-                {
-                    _bookingRepository.BookShow(show, seats.Where(s => s.SeatNumber == seatNumber).FirstOrDefault());
-
-                    return true;
-                }
-
-                show.IsAvailable = false;
-                _cinemaShowRepository.UpdateCinemaShow(show);
-
                 return false;
             }
-            catch (Exception)
+
+            var seats = _seatRepository.GetAvailableSeats(show.Id).ToList();
+            if (seats.Count > 0)
             {
-                throw;
+                _bookingRepository.BookShow(show, seats.Where(s => s.SeatNumber == seatNumber).FirstOrDefault());
+
+                return true;
             }
-            
+
+            show.IsAvailable = false;
+            _cinemaShowRepository.UpdateCinemaShow(show);
+
+            return false;
         }
     }
 }

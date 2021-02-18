@@ -1,6 +1,7 @@
 ﻿using AutoFixture;
 using CinemaService.DataLayer.Models;
 using CinemaService.DataLayer.Repositories;
+using FluentAssertions;
 using System;
 using Xunit;
 
@@ -29,14 +30,15 @@ namespace CinemaService.DataLayer.Tests
             var booking = _bookingRepository.GetBooking(cinemaShow.Id, seat.Id);
 
             // ASSERT
-            Assert.NotNull(booking);
-            Assert.True(booking.IsBooked);
+            booking.Should().NotBeNull();
+            booking.IsBooked.Should().BeTrue();
         }
 
         [Fact]
         public void GivenInvalidCinemaShow_WhenAddBooking_ShouldThrowArgumentNullException()
         {
             Assert.Throws<ArgumentNullException>(() => _bookingRepository.BookShow(null, _fixture.Create<SeatDTO>()));
+
         }
 
         [Fact]
