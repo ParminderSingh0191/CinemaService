@@ -22,7 +22,7 @@ namespace CinemaService.DataLayer.Tests
         public void GivenSeatEntities_WhenQueryForAvailableSeats_ShouldGetSeats()
         {
             // ACT
-            var results = _seatRepository.GetAvailableSeats(1);
+            var results = _seatRepository.GetAvailableSeats(_fixture.Create<int>());
 
             // ASSERT
             Assert.NotNull(results);
@@ -54,6 +54,21 @@ namespace CinemaService.DataLayer.Tests
         public void GivenInvalidSeatNumber_WhenQuerying_ShouldThrowArgumentException(string seatNumber)
         {
             Assert.Throws<ArgumentException>(() => _seatRepository.GetSeat(seatNumber));
+        }
+
+        [Fact]
+        public void GivenCinemaShowIsBooked_WhenQueryForAvailableSeats_ShouldNotGetBookedSeat()
+        {
+            // ACT
+            var results = _seatRepository.GetAvailableSeats(1);
+
+            // ASSERT
+            Assert.NotNull(results);
+
+            foreach (var res in results)
+            {
+                Assert.NotEqual("A10", res.SeatNumber);
+            }
         }
     }
 }

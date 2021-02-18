@@ -49,13 +49,31 @@ namespace CinemaService.DataLayer.Tests
             dbContext.Database.EnsureDeleted();
             dbContext.Database.EnsureCreated();
 
-            var seat = fixture.Create<SeatDTO>();
+            var cinemaShow = fixture.Build<CinemaShowDTO>().
+                                    With(cs => cs.Id, 1).
+                                    Create();
+
+            var seat = fixture.Build<SeatDTO>().
+                               With(s => s.Id, 1).
+                               With(s => s.SeatNumber, "A10").
+                               Create();
             var specificSeat = fixture.Build<SeatDTO>().
                                             With(s => s.SeatNumber, "ABCD").
                                             Create();
 
+            var booking = fixture.Build<BookingDTO>().
+                                 With(b => b.CinemaShow, cinemaShow).
+                                 With(b => b.Seat, seat).
+                                 With(b => b.IsBooked, true).
+                                 Create();
+
+            dbContext.CinemaShows.Add(cinemaShow);
+
             dbContext.Seats.Add(seat);
             dbContext.Seats.Add(specificSeat);
+
+            dbContext.Bookings.Add(booking);
+
             dbContext.SaveChanges();
 
             return new SeatRepository(dbContext);
