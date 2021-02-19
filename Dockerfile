@@ -18,6 +18,19 @@ RUN dotnet build "CinemaService.Web.Api.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "CinemaService.Web.Api.csproj" -c Release -o /app/publish
 
+# Run unit tests
+WORKDIR /src
+RUN mkdir -p /src/tests/results
+
+ARG FAIL_ON_UNIT_TESTS_FAILURE=1
+
+RUN dotnet test CinemaService.sln -r /src/tests/results --logger:trx /p:CollectCoverage=true; \
+    rc=$?; \
+    if [ $FAIL_ON_UNIT_TESTS_FAILURE = 1 ]; then exit $rc; \
+    elif [ $rc = 0 ]; then touch /src/tests/results/tests_succeeded; \
+    else touch /src/tests/results/tests_failed; \
+    fi
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

@@ -22,7 +22,10 @@ namespace CinemaService.DataLayer.Models
             // This will apply migrations at run time
             // Not an ideal case but for demo purposes made it available here
             // Can be removed if we use pipeline to run migrations against the database
-            applicationDbContext.Database.Migrate();
+            if (applicationDbContext.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+            {
+                applicationDbContext.Database.Migrate();
+            }
 
             Console.WriteLine("Finished migrate......");
 
