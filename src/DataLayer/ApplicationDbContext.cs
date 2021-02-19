@@ -1,6 +1,5 @@
 ﻿using CinemaService.DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace CinemaService.DataLayer
 {

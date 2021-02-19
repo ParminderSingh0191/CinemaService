@@ -1,4 +1,5 @@
 using CinemaService.DataLayer;
+using CinemaService.DataLayer.Models;
 using CinemaService.DataLayer.Repositories;
 using CinemaService.Web.Api.Library.Mapper;
 using CinemaService.Web.Api.Library.Services;
@@ -47,6 +48,8 @@ namespace CinemaService.Web.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            PrepDB.PrepPopulation(app);
 
             app.UseHttpsRedirection();
 
