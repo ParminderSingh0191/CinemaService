@@ -1,5 +1,8 @@
 # CinemaService
 
+## What is this project?
+This is a service which can give an information like Get Available cinema shows, Get Available seats of the show and also to book the show. These are API calls and it is using Docker to run the service.
+
 ## Pre-requisite
 
 - Should have docker installed locally
